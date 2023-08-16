@@ -11,7 +11,7 @@ namespace PureChess
     internal class Board
     {
         public Game game;
-        public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr";
+        public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr"; // Better than FEN? Nah..
         public int columns = 8;
         public int rows = 8;
 
@@ -36,12 +36,14 @@ namespace PureChess
 
             game.settings.DebugMessage("§1Board sucessfuly generated");
 
-            DrawPieces(defaultPosition);
+            LoadPosition(defaultPosition);
 
         }
 
-        public void DrawPieces(string positionToLoad)
+        public void LoadPosition(string positionToLoad)
         {
+            string legacyPosition = positionToLoad;
+
             game.settings.DebugMessage($"Loading Position '{positionToLoad}'");
             positionToLoad = positionToLoad.Replace("/", "");
 
@@ -82,55 +84,56 @@ namespace PureChess
                 
                 if (squares[i].piece.type != "None")
                 {
-                    Console.WriteLine($"Drawing {squares[i].piece.GetPieceName()} at Square {squares[i].index}");
+                    Console.WriteLine($"Generating {squares[i].piece.GetPieceName()} at Square {squares[i].index}");
                 }
 
                 i++;
             }
 
             game.settings.DebugMessage("§1Pieces sucessfuly generated!");
-
-            UpdatePosition();
-            Console.WriteLine();
-            DrawCurrentPosition(game.currentPosition);
+            game.settings.DebugMessage("§aThe game is ready!");
+            DrawCurrentPosition();
+            
+            game.state = GameState.Playing;
         }
 
-        public string UpdatePosition()
+        public string GetUpdatedPosition()
         {
-            game.currentPosition = string.Empty;
+            string rawPosition = string.Empty;
 
             foreach (Square square in squares)
             {
                 Piece currentPiece = square.piece;
                 
-                game.currentPosition = game.currentPosition + currentPiece.GetPieceSymbol();
+                rawPosition = rawPosition + currentPiece.GetPieceSymbol();
 
             }
 
-            game.settings.DebugMessage(game.currentPosition);
-
-            string position = game.currentPosition;
-
+            StringBuilder result = new StringBuilder();
             int i = 0;
 
-            foreach (char c in position)
+            foreach (char c in rawPosition)
             {
-                if(i == 8)
+                if (i == 8)
                 {
+                    result.Append("/");
                     i = 0;
-                    position += "/";
                 }
 
+                result.Append(c);
                 i++;
             }
 
-            return position;
+            string reversedCase = new string(result.ToString().Select(c => char.IsLetter(c) ? (char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)) : c).ToArray());
+
+            game.currentPosition = reversedCase;
+            return game.currentPosition;
 
         }
 
-        public void DrawCurrentPosition(string position)
+        public void DrawCurrentPosition()
         {
-            string[] lines = position.Split('/');
+            string[] lines = GetUpdatedPosition().Split('/');
 
             Console.WriteLine("===============");
             for (int i = lines.Length - 1; i >= 0; i--)

@@ -15,9 +15,15 @@ namespace PureChess
         public int playerTurn;
         public string currentPosition;
 
+        public GameState state;
         public void StartGame()
         {
             board.GenerateBoard();
         }
+    }
+
+    public enum GameState
+    {
+        Waiting, Playing, GameOver
     }
 }

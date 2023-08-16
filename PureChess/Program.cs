@@ -7,12 +7,15 @@ Write("Type 'help' for the list of commands\n");
 Game game = new Game();
 Board board = new Board();
 Engine engine = new Engine();
+Settings settings = new Settings();
 
 game.board = board;
 game.engine = engine;
 board.game = game;
 
 engine.game = game;
+
+game.state = GameState.Waiting;
 
 if (Console.ReadLine() == "play")
 {
@@ -21,10 +24,22 @@ if (Console.ReadLine() == "play")
     game.StartGame();
 }
 
-if(Console.ReadLine() == "test")
+if (Console.ReadLine() == "test")
 {
-    engine.ForceMove(board.squares[12], board.squares[20]);
+    //engine.ForceMove(board.squares[12], board.squares[20]);
+
+    engine.MakeMove(board.squares[12], board.squares[28]);
+
+    engine.MakeMove(board.squares[13], board.squares[21]);
 }
+
+if (Console.ReadLine() == "debug_stats")
+{
+    settings.DebugMessage($"§aCurrent position: {game.currentPosition}");
+    settings.DebugMessage($"§cCurrent position (formatted): {board.GetUpdatedPosition()}");
+}
+
+
 
 void Write(string msg)
 {
