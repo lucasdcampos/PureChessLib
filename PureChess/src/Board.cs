@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,6 @@ namespace PureChess
 {
     internal class Board
     {
-        public Game game;
         public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr"; // Better than FEN? Nah..
         public int columns = 8;
         public int rows = 8;
@@ -26,17 +26,19 @@ namespace PureChess
                     square.x = x;
                     square.y = y;
 
-                    square.index = ((columns + rows) / 2) * x + y;
+                    square.index = (columns + rows) / 2 * x + y;
 
                     squares.Add(square);
 
-                    game.settings.DebugMessage($"Generating Square {square.index}");
+                    Game.Instance.settings.DebugMessage($"Generating Square {square.index}");
                 }
             }
 
-            game.settings.DebugMessage("§1Board sucessfuly generated");
+            Game.Instance.settings.DebugMessage("Board sucessfuly generated");
 
             LoadPosition(defaultPosition);
+
+
 
         }
 
@@ -44,7 +46,7 @@ namespace PureChess
         {
             string legacyPosition = positionToLoad;
 
-            game.settings.DebugMessage($"Loading Position '{positionToLoad}'");
+            Game.Instance.settings.DebugMessage($"Loading Position '{positionToLoad}'");
             positionToLoad = positionToLoad.Replace("/", "");
 
             int i = 0;
@@ -77,24 +79,24 @@ namespace PureChess
                         break;
                 }
 
-                if(char.IsUpper(c)) { squares[i].piece.color = 0; }
-                else if(char.IsLower(c)) { squares[i].piece.color = 1; }
+                if (char.IsUpper(c)) { squares[i].piece.color = 0; }
+                else if (char.IsLower(c)) { squares[i].piece.color = 1; }
                 else { squares[i].piece.color = 0; }; // No piece at that square (Set to White (0) by default)
 
-                
+
                 if (squares[i].piece.type != "None")
                 {
-                    Console.WriteLine($"Generating {squares[i].piece.GetPieceName()} at Square {squares[i].index}");
+                    Game.Instance.settings.DebugMessage($"Generating {squares[i].piece.GetPieceName()} at Square {squares[i].index}");
                 }
 
                 i++;
             }
 
-            game.settings.DebugMessage("§1Pieces sucessfuly generated!");
-            game.settings.DebugMessage("§aThe game is ready!");
+            Game.Instance.settings.DebugMessage("Pieces sucessfuly generated!");
+            Game.Instance.settings.DebugMessage("§aThe game is ready!");
             DrawCurrentPosition();
-            
-            game.state = GameState.Playing;
+
+            Game.Instance.state = GameState.Playing;
         }
 
         public string GetUpdatedPosition()
@@ -104,7 +106,7 @@ namespace PureChess
             foreach (Square square in squares)
             {
                 Piece currentPiece = square.piece;
-                
+
                 rawPosition = rawPosition + currentPiece.GetPieceSymbol();
 
             }
@@ -124,29 +126,37 @@ namespace PureChess
                 i++;
             }
 
-            string reversedCase = new string(result.ToString().Select(c => char.IsLetter(c) ? (char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c)) : c).ToArray());
+            string reversedCase = new string(result.ToString().Select(c => char.IsLetter(c) ? char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c) : c).ToArray());
 
-            game.currentPosition = reversedCase;
-            return game.currentPosition;
+            Game.Instance.currentPosition = reversedCase;
+            return Game.Instance.currentPosition;
 
         }
 
         public void DrawCurrentPosition()
         {
+
             string[] lines = GetUpdatedPosition().Split('/');
 
-            Console.WriteLine("===============");
+            if (!Game.Instance.settings.graphicalBoard)
+            {
+                Console.WriteLine($"{Game.Instance.currentPosition} - {Game.Instance.playerTurn}");
+                return;
+            }
+
+
+            Console.WriteLine("---------------");
             for (int i = lines.Length - 1; i >= 0; i--)
             {
                 string line = lines[i];
 
                 for (int j = 0; j < line.Length; j++)
                 {
-                    char c = line[j];
+                    char c = TurnCharToSprite(line[j]);
 
                     if (c == '.')
                     {
-                        Console.Write("+ ");
+                        Console.Write(". ");
                     }
                     else if (c == ' ')
                     {
@@ -162,9 +172,56 @@ namespace PureChess
                 Console.WriteLine();
             }
 
-            Console.WriteLine("===============");
+            Console.WriteLine("---------------");
 
-            Console.WriteLine((game.playerTurn == 0 ? "White's" : "Black's") + " turn");
+            Console.WriteLine((Game.Instance.playerTurn == 0 ? "White's" : "Black's") + " turn");
+        }
+
+        char TurnCharToSprite(char c)
+        {
+            if (Game.Instance.settings.charMode == true) { return c; }
+
+            switch (c)
+            {
+                case 'p':
+                    c = '♙';
+                    break;
+                case 'P':
+                    c = '♟';
+                    break;
+                case 'n':
+                    c = '♘';
+                    break;
+                case 'N':
+                    c = '♞';
+                    break;
+                case 'b':
+                    c = '♗';
+                    break;
+                case 'B':
+                    c = '♝';
+                    break;
+                case 'q':
+                    c = '♕';
+                    break;
+                case 'Q':
+                    c = '♛';
+                    break;
+                case 'k':
+                    c = '♔';
+                    break;
+                case 'K':
+                    c = '♚';
+                    break;
+                case 'r':
+                    c = '♖';
+                    break;
+                case 'R':
+                    c = '♜';
+                    break;
+            }
+
+            return c;
         }
 
     }

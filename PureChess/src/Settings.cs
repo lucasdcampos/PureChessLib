@@ -9,7 +9,8 @@ namespace PureChess
     internal class Settings
     {
         public bool debugMode = true;
-
+        public bool charMode = true;
+        public bool graphicalBoard = false;
 
         public void DebugMessage(string message)
         {

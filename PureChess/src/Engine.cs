@@ -8,7 +8,6 @@ namespace PureChess
 {
     internal class Engine
     {
-        public Game game;
         public bool ValidateMove(Square initialSquare, Square targetSquare)
         {
             int difference = targetSquare.index - initialSquare.index;
@@ -25,24 +24,24 @@ namespace PureChess
                     return true;
             }
         }
-        
+
         private bool Pawn(Square initial, Square final, Piece piece)
         {
             int d = final.index - initial.index;
 
             // Pawn moving forward
-            if((d == 8 && piece.color == 0) || (d == -8 && piece.color == 1))
+            if (d == 8 && piece.color == 0 || d == -8 && piece.color == 1)
             {
                 return final.piece.GetPieceType("None");
             }
 
             // Pawn moving forward 2x
-            if (((d == 16 && piece.color == 0) && initial.x == 1) || (d == -16 && piece.color == 1) && initial.x == 6)
+            if (d == 16 && piece.color == 0 && initial.x == 1 || d == -16 && piece.color == 1 && initial.x == 6)
             {
                 return final.piece.GetPieceType("None");
             }
 
-            if (((d == 9 || d == 8) && piece.color == 0) || (d == - 8 || d == -9) && piece.color == 1)
+            if ((d == 9 || d == 8) && piece.color == 0 || (d == -8 || d == -9) && piece.color == 1)
             {
                 return !final.piece.GetPieceType("None");
             }
@@ -54,22 +53,24 @@ namespace PureChess
         {
             bool isValid = ValidateMove(initial, final);
 
-            if(isValid)
+            if (isValid)
             {
                 Piece defaultPiece = initial.piece;
 
                 initial.piece = final.piece;
 
                 final.piece = defaultPiece;
+                Game.Instance.playerTurn = Game.Instance.playerTurn == 0 ? 1 : 0;
 
-                game.board.DrawCurrentPosition();
+                Game.Instance.settings.DebugMessage($"§aMove {Game.Instance.ConvertToCoordinate(initial.index)}-{Game.Instance.ConvertToCoordinate(final.index)} is valid!");
 
-                game.settings.DebugMessage($"§aMove {initial.index}-{final.index} is valid!");
+                Game.Instance.board.DrawCurrentPosition();
+
 
                 return true;
             }
 
-            game.settings.DebugMessage($"§cMove {initial.index}-{final.index} is not valid!");
+            Game.Instance.settings.DebugMessage($"§cMove {Game.Instance.ConvertToCoordinate(initial.index)}-{Game.Instance.ConvertToCoordinate(final.index)} is not valid!");
             return false;
 
         }
@@ -82,9 +83,9 @@ namespace PureChess
 
             targetSquare.piece = defaultPiece;
 
-            game.settings.DebugMessage($"Making move {defaultPiece.GetPieceSymbol()}{initialSquare.index} - {targetSquare.index}");
+            Game.Instance.settings.DebugMessage($"Making move {defaultPiece.GetPieceSymbol()}{initialSquare.index} - {targetSquare.index}");
 
-            game.board.DrawCurrentPosition();
+            Game.Instance.board.DrawCurrentPosition();
         }
     }
 }

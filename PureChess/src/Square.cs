@@ -14,6 +14,6 @@ namespace PureChess
 
         public Piece piece = new Piece();
 
-       
+
     }
 }

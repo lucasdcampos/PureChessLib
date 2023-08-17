@@ -51,10 +51,10 @@ namespace PureChess
                     break;
             }
 
-            if(color == 0) { pieceChar = char.ToLower(pieceChar); } else { pieceChar = char.ToUpper(pieceChar); }
+            if (color == 0) { pieceChar = char.ToLower(pieceChar); } else { pieceChar = char.ToUpper(pieceChar); }
 
             return pieceChar;
-            
+
         }
     }
 }
