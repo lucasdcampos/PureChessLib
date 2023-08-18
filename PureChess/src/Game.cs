@@ -19,9 +19,9 @@ namespace PureChess
         public string currentPosition;
 
         public GameState state;
-        public void StartGame()
+        public void StartGame(string position)
         {
-            board.GenerateBoard();
+            board.GenerateBoard(position);
         }
 
         public void StopGame()
@@ -50,10 +50,50 @@ namespace PureChess
             return $"{col}{row}";
         }
 
+        public string ConvertFENToSNA(string fen)
+        {
+            string[] fenParts = fen.Split('/');
+
+            StringBuilder result = new StringBuilder();
+
+            foreach (string fenPart in fenParts)
+            {
+                if (fenPart.Length == 1 && char.IsDigit(fenPart[0]))
+                {
+                    int emptyCount = int.Parse(fenPart);
+                    result.Append('.', emptyCount);
+                }
+                else
+                {
+                    foreach (char c in fenPart)
+                    {
+                        if (char.IsUpper(c))
+                        {
+                            result.Append(char.ToLower(c));
+                        }
+                        else if (char.IsLower(c))
+                        {
+                            result.Append(char.ToUpper(c));
+                        }
+                        else
+                        {
+                            result.Append(c);
+                        }
+                    }
+                }
+
+                result.Append('/');
+            }
+
+            result.Remove(result.Length - 1, 1); // Remove the trailing '/'
+            return result.ToString();
+        }
+
+
     }
 
     public enum GameState
     {
-        Waiting, Playing, GameOver
+        Waiting, Playing, GameOver, Initializing
     }
 }

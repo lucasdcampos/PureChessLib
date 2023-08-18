@@ -8,6 +8,8 @@ namespace PureChess
 {
     internal class Engine
     {
+        public bool[] uciValidations = {false,false,false, false};
+
         public bool ValidateMove(Square initialSquare, Square targetSquare)
         {
             int difference = targetSquare.index - initialSquare.index;
@@ -17,9 +19,11 @@ namespace PureChess
             switch (initialSquare.piece.type)
             {
                 case "None":
-                    return true;
+                    return false;
                 case "Pawn":
                     return Pawn(initialSquare, targetSquare, currentPiece);
+                case "King":
+                    return King(initialSquare, targetSquare, currentPiece);
                 default:
                     return true;
             }
@@ -44,6 +48,19 @@ namespace PureChess
             if ((d == 9 || d == 8) && piece.color == 0 || (d == -8 || d == -9) && piece.color == 1)
             {
                 return !final.piece.GetPieceType("None");
+            }
+
+            return false;
+        }
+
+        private bool King(Square initial, Square final, Piece piece)
+        {
+            int d = final.index - initial.index;
+
+            // Pawn moving forward
+            if (d == 8 || d == -8 || d == 1 || d == -1 || d == 7 || d == -7 || d == 9 || d == -9)
+            {
+                return final.piece.GetPieceType("None") || (!final.piece.GetPieceType("None") && final.piece.color != piece.color);
             }
 
             return false;

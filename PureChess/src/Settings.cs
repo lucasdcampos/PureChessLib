@@ -49,6 +49,7 @@ namespace PureChess
                 Console.ResetColor();
             }
 
+
             Console.WriteLine(message);
             Console.ResetColor();
         }

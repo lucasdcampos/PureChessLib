@@ -6,6 +6,9 @@ class Program
 {
     static void Main()
     {
+        bool execute = true;
+        string uciPos = "";
+
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.Title = "Pure Chess Shell";
         
@@ -19,13 +22,14 @@ class Program
         Write("{=Blue}Welcome to PureChess Terminal{/}\n");
         Write("Type 'help' for the list of commands\n");
 
-        while (true)
+        while (execute)
         {
             string command = Console.ReadLine();
-
+            
             switch (command)
             {
                 case "quit":
+                    execute= false;
                     break;
 
                 case "help":
@@ -40,6 +44,7 @@ class Program
                     Console.WriteLine("'play': Start a new Game");
                     Console.WriteLine("'quit': Quit the Application");
                     Console.WriteLine("'draw': Draw a sketch of the board in the current position");
+                    Console.WriteLine("'uci': Will initialize a new custom game");
                     Console.WriteLine("'clear': Clean the Console");
                     Console.WriteLine("'version': Will display the current software version");
                     Console.WriteLine("'debug': Turn on/off debug mode");
@@ -52,11 +57,17 @@ class Program
 
                     break;
 
+                case "uci" or "UCI":
+                    Console.WriteLine("uciok");
+                    Game.Instance.engine.uciValidations[0] = true;
+                    Game.Instance.state = GameState.Initializing;
+                    break;
+
                 case "play":
                     if(game.state != GameState.Playing)
                     {
                         Console.WriteLine("Starting new Game");
-                        game.StartGame();
+                        game.StartGame(Game.Instance.board.defaultPosition);
                     }
                     else
                     {
@@ -66,7 +77,12 @@ class Program
                     break;
 
                 case "stop":
+                    if(Game.Instance.state == GameState.Playing)
+                    {
+                        Console.WriteLine("The game has ended. Type 'play' to start a new one");
+                    }
                     Game.Instance.StopGame();
+                    
                     break;
 
                 case "debug":
@@ -84,17 +100,19 @@ class Program
                     Console.WriteLine("graphicalBoard = " + Game.Instance.settings.graphicalBoard);
                     break;
 
-                case "isready":
-                    Console.WriteLine("readyok");
-                    break;
-
                 case "draw":
                     if(game.state != GameState.Playing) { break; }
                     Game.Instance.board.DrawCurrentPosition();
                     break;
-
+                case "testfen":
+                    Console.WriteLine(Game.Instance.ConvertFENToSNA("r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R"));
+                    break;
                 case "clear":
                     Console.Clear();
+                    break;
+
+                case "ucipos":
+                    Console.WriteLine(uciPos);
                     break;
 
                 case "stats":
@@ -138,6 +156,48 @@ class Program
                             Console.WriteLine("Invalid move, please type in the following format (ex: e2e4).");
                         }
                     }
+
+                    else if(game.state == GameState.Initializing)
+                    {
+                        switch (command)
+                        {
+                            case "isready":
+                                if (Game.Instance.engine.uciValidations[1])
+                                {
+                                    Console.WriteLine("readyok");
+                                }
+
+                                break;
+                            case "ucinewgame":
+                                Game.Instance.engine.uciValidations[1] = true;
+                                break;
+                            case "position":
+                                Game.Instance.engine.uciValidations[2] = true;
+                                Console.WriteLine("type position SNA string");
+                                break;
+                            case "go":
+                                if (Game.Instance.engine.uciValidations[3])
+                                {
+                                    Game.Instance.StartGame(uciPos);
+                                    uciPos = string.Empty;
+                                    break;
+                                }
+                                
+                                break;
+                            case "stop":
+                                Game.Instance.state = GameState.Waiting;
+                                break;
+                            default:
+                                if (Game.Instance.engine.uciValidations[2])
+                                {
+                                    Game.Instance.engine.uciValidations[3] = true;
+                                    uciPos = command;
+                                    break;
+                                    
+                                }
+                                break;
+                        }
+                    } 
                     else
                     {
                         Console.WriteLine("Unknown command, type 'help' for more information!");

@@ -16,7 +16,7 @@ namespace PureChess
         public int rows = 8;
 
         public List<Square> squares = new List<Square>();
-        public void GenerateBoard()
+        public void GenerateBoard(string position)
         {
             for (int x = 0; x < columns; x++)
             {
@@ -35,9 +35,8 @@ namespace PureChess
             }
 
             Game.Instance.settings.DebugMessage("Board sucessfuly generated");
-
-            LoadPosition(defaultPosition);
-
+            if(position == null || position == "" || position == " " || position == "default" || position == "startpos") { position = defaultPosition; }
+            LoadPosition(position);
 
 
         }
