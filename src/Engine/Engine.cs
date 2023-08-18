@@ -1,7 +1,11 @@
-﻿namespace PureChess
+﻿using System.Collections.Generic;
+
+namespace PureChess
 {
     public class Engine
     {
+        public Evaluation evaluation = new Evaluation();
+
         public bool[] uciValidations = {false,false,false, false};
 
         public bool ValidateMove(int initialSquare, int targetSquare)
@@ -100,6 +104,21 @@
             Game.settings.DebugMessage($"Making move {defaultPiece.GetPieceSymbol()}{initialSquare.index} - {targetSquare.index}");
 
             Game.board.DrawCurrentPosition();
+        }
+
+        public void GenerateMoves(int startSquare)
+        {
+            Square[] squares = Game.board.squares.ToArray();
+            List<Square> moves = new List<Square>();
+
+            foreach (Square square in squares)
+            {
+                if(ValidateMove(startSquare, square.index))
+                {
+                    moves.Add(square);
+                }
+
+            }
         }
     }
 }

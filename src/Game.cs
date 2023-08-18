@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using PureChessLib.src.Misc;
+
 namespace PureChess
 {
     public static class Game

@@ -1,5 +1,6 @@
 ﻿using System;
-namespace PureChess
+
+namespace PureChessLib.src.Misc
 {
     public class Settings
     {
