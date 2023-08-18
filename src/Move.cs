@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace PureChess
 {
-    internal class Square
+    public class Move
     {
-        public int index;
-        public int x;
-        public int y;
-
-        public Piece piece = new Piece();
-
-
+        public Square initialSquare;
+        public Square targetSquare;
     }
 }

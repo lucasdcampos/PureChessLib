@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PureChess
 {
-    internal class Engine
+    public class Engine
     {
         public bool[] uciValidations = {false,false,false, false};
 
@@ -77,17 +77,17 @@ namespace PureChess
                 initial.piece = final.piece;
 
                 final.piece = defaultPiece;
-                Game.Instance.playerTurn = Game.Instance.playerTurn == 0 ? 1 : 0;
+                Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
 
-                Game.Instance.settings.DebugMessage($"§aMove {Game.Instance.ConvertToCoordinate(initial.index)}-{Game.Instance.ConvertToCoordinate(final.index)} is valid!");
+                Game.settings.DebugMessage($"§aMove {Game.ConvertToCoordinate(initial.index)}-{Game.ConvertToCoordinate(final.index)} is valid!");
 
-                Game.Instance.board.DrawCurrentPosition();
+                Game.board.DrawCurrentPosition();
 
 
                 return true;
             }
 
-            Game.Instance.settings.DebugMessage($"§cMove {Game.Instance.ConvertToCoordinate(initial.index)}-{Game.Instance.ConvertToCoordinate(final.index)} is not valid!");
+            Game.settings.DebugMessage($"§cMove {Game.ConvertToCoordinate(initial.index)}-{Game.ConvertToCoordinate(final.index)} is not valid!");
             return false;
 
         }
@@ -100,9 +100,9 @@ namespace PureChess
 
             targetSquare.piece = defaultPiece;
 
-            Game.Instance.settings.DebugMessage($"Making move {defaultPiece.GetPieceSymbol()}{initialSquare.index} - {targetSquare.index}");
+            Game.settings.DebugMessage($"Making move {defaultPiece.GetPieceSymbol()}{initialSquare.index} - {targetSquare.index}");
 
-            Game.Instance.board.DrawCurrentPosition();
+            Game.board.DrawCurrentPosition();
         }
     }
 }

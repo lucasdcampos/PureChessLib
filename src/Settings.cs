@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PureChess
 {
-    internal class Settings
+    public class Settings
     {
         public bool debugMode = true;
         public bool charMode = true;

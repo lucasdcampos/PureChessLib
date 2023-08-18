@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PureChess
 {
-    internal class Piece
+   public class Piece
     {
         public string type;
         public int color;
