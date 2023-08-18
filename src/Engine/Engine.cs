@@ -80,7 +80,7 @@ namespace PureChess
                 final.piece = defaultPiece;
                 Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
 
-                Game.settings.DebugMessage($"§aMove {Game.ConvertToCoordinate(initial.index)}-{Game.ConvertToCoordinate(final.index)} is valid!");
+                Game.settings.DebugMessage($"§aMove {Game.ConvertToCoordinate(initial.index)}{Game.ConvertToCoordinate(final.index)} is valid!");
 
                 Game.board.DrawCurrentPosition();
 
@@ -88,7 +88,7 @@ namespace PureChess
                 return true;
             }
 
-            Game.settings.DebugMessage($"§cMove {Game.ConvertToCoordinate(initial.index)}-{Game.ConvertToCoordinate(final.index)} is not valid!");
+            Game.settings.DebugMessage($"§cMove {Game.ConvertToCoordinate(initial.index)}{Game.ConvertToCoordinate(final.index)} is not valid!");
             return false;
 
         }

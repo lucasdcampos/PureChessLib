@@ -8,7 +8,7 @@ namespace PureChess
 {
     public class Board
     {
-        public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr"; // Better than FEN? Nah..
+        public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr - 0"; // Better than FEN? Nah..
         public int columns = 8;
         public int rows = 8;
 
@@ -43,7 +43,14 @@ namespace PureChess
             string legacyPosition = positionToLoad;
 
             Game.settings.DebugMessage($"Loading Position '{positionToLoad}'");
+
+            if (positionToLoad.EndsWith("1")) { Game.playerTurn = 1; } else { Game.playerTurn= 0; }
+            
             positionToLoad = positionToLoad.Replace("/", "");
+            positionToLoad = positionToLoad.Replace("-", "");
+            positionToLoad = positionToLoad.Replace(" ", "");
+            positionToLoad = positionToLoad.Replace("0", "");
+            positionToLoad = positionToLoad.Replace("1", "");
 
             int i = 0;
             foreach (char c in positionToLoad)
@@ -124,24 +131,29 @@ namespace PureChess
 
             string reversedCase = new string(result.ToString().Select(c => char.IsLetter(c) ? char.IsUpper(c) ? char.ToLower(c) : char.ToUpper(c) : c).ToArray());
 
-            Game.currentPosition = reversedCase;
+            Game.currentPosition = reversedCase + " - " + Game.playerTurn;
             return Game.currentPosition;
 
         }
 
+        
+
         public void DrawCurrentPosition()
         {
+            string pos = GetUpdatedPosition();
 
-            string[] lines = GetUpdatedPosition().Split('/');
+            pos = pos.Replace("0", "");
+            pos = pos.Replace("1", "");
+            pos = pos.Replace("-", "");
+            pos = pos.Replace(" ", "");
 
-            if (!Game.settings.graphicalBoard)
-            {
-                Console.WriteLine($"{Game.currentPosition} - {Game.playerTurn}");
-                return;
-            }
+            string[] lines = pos.Split('/');
 
+            //Console.WriteLine($"{Game.currentPosition}\n");
 
-            Console.WriteLine("---------------");
+            if (!Game.settings.graphicalBoard) { return; } // Used to display or not the ASCII Board
+
+            Console.WriteLine("  +-----------------+");
             for (int i = lines.Length - 1; i >= 0; i--)
             {
                 string line = lines[i];
@@ -150,27 +162,29 @@ namespace PureChess
                 {
                     char c = TurnCharToSprite(line[j]);
 
+                    if(j == 0) { Console.Write($"{i+1} | "); }
+                    
                     if (c == '.')
                     {
                         Console.Write(". ");
-                    }
-                    else if (c == ' ')
-                    {
-                        Console.Write("  ");
                     }
                     else
                     {
                         Console.Write($"{c} ");
                         Console.ResetColor();
                     }
+
+                    if (j == 7) { Console.Write("|"); }
                 }
 
                 Console.WriteLine();
             }
 
-            Console.WriteLine("---------------");
+            Console.WriteLine("  +-----------------+");
+            Console.WriteLine("    a b c d e f g h");
 
-            Console.WriteLine((Game.playerTurn == 0 ? "White's" : "Black's") + " turn");
+            Console.WriteLine((Game.playerTurn == 0 ? "\nWhite's" : "\nBlack's") + " turn");
+
         }
 
         char TurnCharToSprite(char c)

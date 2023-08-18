@@ -4,9 +4,9 @@ namespace PureChessLib.src.Misc
 {
     public class Settings
     {
-        public bool debugMode = true;
-        public bool charMode = true;
-        public bool graphicalBoard = false;
+        public bool debugMode = false;
+        public bool charMode = false;
+        public bool graphicalBoard = true;
 
         public void DebugMessage(string message)
         {
