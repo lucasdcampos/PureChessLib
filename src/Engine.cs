@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PureChess
+﻿namespace PureChess
 {
     public class Engine
     {
         public bool[] uciValidations = {false,false,false, false};
 
-        public bool ValidateMove(Square initialSquare, Square targetSquare)
+        public bool ValidateMove(int initialSquare, int targetSquare)
         {
-            int difference = targetSquare.index - initialSquare.index;
+            Piece piece = Game.board.squares[initialSquare].piece;
 
-            Piece currentPiece = initialSquare.piece;
+            int difference = targetSquare - initialSquare;
 
-            switch (initialSquare.piece.type)
+
+            Square[] moveSquares = { Game.board.squares[initialSquare], Game.board.squares[targetSquare] };
+
+            switch (piece.type)
             {
                 case "None":
                     return false;
                 case "Pawn":
-                    return Pawn(initialSquare, targetSquare, currentPiece);
+                    return Pawn(moveSquares[0], moveSquares[1], piece);
                 case "King":
-                    return King(initialSquare, targetSquare, currentPiece);
+                    return King(moveSquares[0], moveSquares[1], piece); ;
                 default:
                     return true;
             }
@@ -68,7 +65,7 @@ namespace PureChess
 
         public bool MakeMove(Square initial, Square final)
         {
-            bool isValid = ValidateMove(initial, final);
+            bool isValid = ValidateMove(initial.index, final.index);
 
             if (isValid)
             {

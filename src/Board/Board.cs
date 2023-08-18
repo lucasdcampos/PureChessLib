@@ -1,11 +1,8 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
 
 namespace PureChess
 {
@@ -35,7 +32,7 @@ namespace PureChess
             }
 
             Game.settings.DebugMessage("Board sucessfuly generated");
-            if(position == null || position == "" || position == " " || position == "default" || position == "startpos") { position = defaultPosition; }
+            if (position == null || position == "" || position == " " || position == "default" || position == "startpos") { position = defaultPosition; }
             LoadPosition(position);
 
 
