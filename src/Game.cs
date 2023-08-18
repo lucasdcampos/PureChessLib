@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using PureChessLib.src.Misc;
 
 namespace PureChess
@@ -12,6 +13,9 @@ namespace PureChess
 
         public static int playerTurn;
         public static string currentPosition;
+        public static string gamePGN;
+
+        public static List<Move> moves = new List<Move>();
 
         public static GameState state;
         public static void StartGame(string position)
@@ -23,6 +27,7 @@ namespace PureChess
         {
             board.squares.Clear();
             currentPosition = string.Empty;
+            gamePGN = string.Empty;
             playerTurn = 0;
             state = GameState.Waiting;
         }

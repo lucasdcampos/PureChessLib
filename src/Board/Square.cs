@@ -8,5 +8,14 @@
 
         public Piece piece = new Piece();
 
+        public string GetCoord()
+        {
+            string possibleX = "abcdefgh";
+
+            char coordX = possibleX[y];
+
+            return coordX + (x+1).ToString();
+        }
+
     }
 }

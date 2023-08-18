@@ -136,6 +136,11 @@ namespace PureChess
 
         }
 
+        public string GetCoordByIndex(int index)
+        {
+            return squares[index].GetCoord();
+        }
+
         
 
         public void DrawCurrentPosition()

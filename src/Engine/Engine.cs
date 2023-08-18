@@ -8,30 +8,34 @@ namespace PureChess
 
         public bool[] uciValidations = {false,false,false, false};
 
-        public bool ValidateMove(int initialSquare, int targetSquare)
+        public bool ValidateMove(Move move)
         {
-            Piece piece = Game.board.squares[initialSquare].piece;
+            Square initialSquare = move.initialSquare;
+            Square targetSquare = move.targetSquare;
+            Piece piece = move.initialSquare.piece;
 
-            int difference = targetSquare - initialSquare;
+            int difference = targetSquare.index - initialSquare.index;
 
-
-            Square[] moveSquares = { Game.board.squares[initialSquare], Game.board.squares[targetSquare] };
 
             switch (piece.type)
             {
                 case "None":
                     return false;
                 case "Pawn":
-                    return Pawn(moveSquares[0], moveSquares[1], piece);
+                    return Pawn(move);
                 case "King":
-                    return King(moveSquares[0], moveSquares[1], piece); ;
+                    return King(move); ;
                 default:
                     return true;
             }
         }
 
-        private bool Pawn(Square initial, Square final, Piece piece)
+        private bool Pawn(Move move)
         {
+            Square initial = move.initialSquare;
+            Square final = move.targetSquare;
+            Piece piece = move.initialSquare.piece;
+
             int d = final.index - initial.index;
 
             // Pawn moving forward
@@ -54,8 +58,12 @@ namespace PureChess
             return false;
         }
 
-        private bool King(Square initial, Square final, Piece piece)
+        private bool King(Move move)
         {
+            Square initial = move.initialSquare;
+            Square final = move.targetSquare;
+            Piece piece = move.initialSquare.piece;
+
             int d = final.index - initial.index;
 
             // Pawn moving forward
@@ -67,9 +75,13 @@ namespace PureChess
             return false;
         }
 
-        public bool MakeMove(Square initial, Square final)
+        public bool MakeMove(Move move)
         {
-            bool isValid = ValidateMove(initial.index, final.index);
+            Square initial = move.initialSquare;
+            Square final = move.targetSquare;
+            Piece piece = move.initialSquare.piece;
+
+            bool isValid = ValidateMove(move);
 
             if (isValid)
             {
@@ -80,6 +92,7 @@ namespace PureChess
                 final.piece = defaultPiece;
                 Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
 
+                move.AddToMoveList();
                 Game.settings.DebugMessage($"§aMove {Game.ConvertToCoordinate(initial.index)}{Game.ConvertToCoordinate(final.index)} is valid!");
 
                 Game.board.DrawCurrentPosition();
@@ -106,19 +119,6 @@ namespace PureChess
             Game.board.DrawCurrentPosition();
         }
 
-        public void GenerateMoves(int startSquare)
-        {
-            Square[] squares = Game.board.squares.ToArray();
-            List<Square> moves = new List<Square>();
-
-            foreach (Square square in squares)
-            {
-                if(ValidateMove(startSquare, square.index))
-                {
-                    moves.Add(square);
-                }
-
-            }
-        }
+        
     }
 }
