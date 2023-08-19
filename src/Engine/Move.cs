@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 
 namespace PureChess
@@ -12,15 +13,16 @@ namespace PureChess
         {
             Game.moves.Add(this);
 
-            string currentMoveString = initialSquare.piece.GetPieceSymbol().ToString();
+            string currentMoveString = targetSquare.piece.GetPieceSymbol().ToString().ToUpper();
 
             currentMoveString += initialSquare.GetCoord();
             currentMoveString += targetSquare.GetCoord();
 
             // Verify if is a move made by White
-            if(initialSquare.piece.color == 0)
+            if(Game.playerTurn == 1)
             {
-                Game.gamePGN += $"{Game.moves.Count}. ";
+                Game.gamePGN += $"{Math.Ceiling((Decimal)Game.moves.Count/2)}. ";
+                
             }
 
             Game.gamePGN += currentMoveString + " ";
