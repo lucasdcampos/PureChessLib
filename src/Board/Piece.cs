@@ -61,5 +61,19 @@
             return pieceChar;
 
         }
+
+        public void ResetPiece()
+        {
+            type = "None";
+            color = 0;
+            UpdatePieceInfo();
+        }
+
+        public void UpdatePiece(string pieceType, int pieceColor)
+        {
+            type = pieceType;
+            color = pieceColor;
+            UpdatePieceInfo();
+        }
     }
 }

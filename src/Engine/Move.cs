@@ -27,8 +27,9 @@ namespace PureChess
 
             Game.gamePGN += currentMoveString + " ";
 
-
         }
+
+
 
     }
 

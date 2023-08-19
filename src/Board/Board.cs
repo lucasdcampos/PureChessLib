@@ -190,6 +190,7 @@ namespace PureChess
 
             Console.WriteLine((Game.playerTurn == 0 ? "\nWhite's" : "\nBlack's") + " turn");
 
+
         }
 
         char TurnCharToSprite(char c)

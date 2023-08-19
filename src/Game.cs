@@ -15,6 +15,8 @@ namespace PureChess
         public static string currentPosition;
         public static string gamePGN;
 
+        public static bool aiFight = true;
+
         public static List<Move> moves = new List<Move>();
 
         public static GameState state;
@@ -26,6 +28,7 @@ namespace PureChess
         public static void StopGame()
         {
             board.squares.Clear();
+            moves.Clear();
             currentPosition = string.Empty;
             gamePGN = string.Empty;
             playerTurn = 0;
