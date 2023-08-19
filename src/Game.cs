@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using PureChessLib.src.Misc;
 
@@ -55,41 +56,34 @@ namespace PureChess
 
         public static string ConvertFENToSNA(string fen)
         {
-            string[] fenParts = fen.Split('/');
+            string finalString = string.Empty;
+            string withNumbers = string.Empty;
+            char p = fen.EndsWith("b") ? '1' : '0';
 
-            StringBuilder result = new StringBuilder();
+            fen = fen.Replace(" ", "");
+            fen = fen.Replace("w", "");
 
-            foreach (string fenPart in fenParts)
+            fen = fen.Replace("8", "........");
+            fen = fen.Replace("7", ".......");
+            fen = fen.Replace("6", "......");
+            fen = fen.Replace("5", ".....");
+            fen = fen.Replace("4", "....");
+            fen = fen.Replace("3", "...");
+            fen = fen.Replace("2", "..");
+            fen = fen.Replace("1", ".");
+
+            foreach (char c in withNumbers)
             {
-                if (fenPart.Length == 1 && char.IsDigit(fenPart[0]))
-                {
-                    int emptyCount = int.Parse(fenPart);
-                    result.Append('.', emptyCount);
-                }
-                else
-                {
-                    foreach (char c in fenPart)
-                    {
-                        if (char.IsUpper(c))
-                        {
-                            result.Append(char.ToLower(c));
-                        }
-                        else if (char.IsLower(c))
-                        {
-                            result.Append(char.ToUpper(c));
-                        }
-                        else
-                        {
-                            result.Append(c);
-                        }
-                    }
-                }
+                char newC = ' ';
+                if (char.IsUpper(c)) { newC = char.ToLower(c); }
+                if (char.IsLower(c)) { newC = char.ToUpper(c); }
 
-                result.Append('/');
+                finalString += newC;
             }
 
-            result.Remove(result.Length - 1, 1); // Remove the trailing '/'
-            return result.ToString();
+            finalString += $" - {p}";
+
+            return finalString;
         }
 
 

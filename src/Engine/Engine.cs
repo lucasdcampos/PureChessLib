@@ -7,28 +7,50 @@ namespace PureChess
     {
         public Evaluation evaluation = new Evaluation();
 
-        public bool[] uciValidations = {false,false,false, false};
+        public bool[] uciValidations = { false, false, false, false };
+
         public bool MakeMove(Move move)
         {
             bool isValid = ValidateMove(move);
 
             if (isValid)
             {
-                move.targetSquare.piece.UpdatePiece(move.initialSquare.piece.type, move.initialSquare.piece.color);
-                
+                if (isInCheck())
+                {
+                    Game.StopGame();
+                    Console.WriteLine("Something went wrong. King captured (?). Game aborted.");
+                    return false;
+                }
+
+                Piece defaultTargetPiece = move.targetSquare.piece.Clone();
+                Piece defaultInitialPiece = move.initialSquare.piece.Clone();
+
+                move.targetSquare.piece.UpdatePiece(move.initialSquare.piece.type, move.initialSquare.piece.color, move.initialSquare.piece.value);
                 move.initialSquare.piece.ResetPiece();
 
-                Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
-                move.AddToMoveList();
 
-                Game.settings.DebugMessage($"§aMove {Game.ConvertToCoordinate(move.initialSquare.index)}{Game.ConvertToCoordinate(move.targetSquare.index)} is valid!");
+                Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
+
+                if (isInCheck())
+                {
+                    // Undoing last move
+                    move.initialSquare.piece = defaultInitialPiece.Clone();
+                    move.targetSquare.piece = defaultTargetPiece.Clone();
+
+                    Game.playerTurn = Game.playerTurn == 0 ? 1 : 0;
+
+                    return false;
+                }
+
+
+
+                move.AddToMoveList();
 
                 Game.board.DrawCurrentPosition();
 
+
                 return true;
             }
-
-            Game.settings.DebugMessage($"§cMove {Game.ConvertToCoordinate(move.initialSquare.index)}{Game.ConvertToCoordinate(move.targetSquare.index)} is not valid!");
             return false;
 
         }
@@ -41,9 +63,10 @@ namespace PureChess
 
             int difference = targetSquare.index - initialSquare.index;
 
-            if(initialSquare.piece.color != Game.playerTurn) { return false; }
-            if(difference == 0) { return false; }
+            if (initialSquare.piece.color != Game.playerTurn) { return false; }
+            if (difference == 0) { return false; }
             if (!targetSquare.piece.GetPieceType("None") && targetSquare.piece.color == Game.playerTurn) { return false; }
+
 
             switch (piece.type)
             {
@@ -54,13 +77,15 @@ namespace PureChess
                 case "King":
                     return King(move);
                 case "Rook":
-                    return false; 
+                    return Rook(move);
                 case "Knight":
-                    return Knight(move); 
+                    return Knight(move);
+                case "Queen":
+                    return Queen(move);
                 default:
                     return false;
             }
-            
+
         }
 
         private bool Pawn(Move move)
@@ -70,23 +95,34 @@ namespace PureChess
             Piece piece = move.initialSquare.piece;
 
             int d = final.index - initial.index;
+            int dX = final.x - initial.x;
+            int dY = final.y - initial.y;
+
             int i = piece.color == 0 ? 1 : -1;
 
             // Pawn moving forward
             if (d == 8 * i)
             {
+                if(final.x == 0 || final.x == 7) { return false; }
                 return final.piece.GetPieceType("None");
             }
 
             // Pawn moving forward 2x
-            if (d == (16 * i) && initial.x == 1 || initial.x == 7)
+            if ((dX == (2 * i) && dY == 0) && (initial.x == 1 || initial.x == 6))
             {
-                return final.piece.GetPieceType("None") && Game.board.squares[final.index - (8*i)].piece.GetPieceType("None");
+                if (final.x == 0 || final.x == 7) { return false; }
+                return final.piece.GetPieceType("None") && Game.board.squares[final.index - (8 * i)].piece.GetPieceType("None");
             }
 
-            if (d == 9 * i || d == 7 * i)
+            // Pawn capturing
+            if (dX == i)
             {
-                return !final.piece.GetPieceType("None");
+                if (!final.piece.GetPieceType("None"))
+                {
+                    if (final.x == 0 || final.x == 7) { return false; }
+                    return dY == 1 || dY == -1;
+                }
+
             }
 
             return false;
@@ -96,17 +132,33 @@ namespace PureChess
         {
             Square initial = move.initialSquare;
             Square final = move.targetSquare;
-            Piece piece = move.initialSquare.piece;
 
-            int d = final.index - initial.index;
-
-            // Pawn moving forward
-            if (d == 8 || d == -8 || d == 1 || d == -1 || d == 7 || d == -7 || d == 9 || d == -9)
+            if (initial.x == final.x)
             {
-                return final.piece.GetPieceType("None") || (!final.piece.GetPieceType("None") && final.piece.color != piece.color);
+                return final.y - initial.y == 1 || final.y - initial.y == -1;
+            }
+
+            if (initial.y == final.y)
+            {
+                return final.x - initial.x == 1 || final.x - initial.x == -1;
+            }
+
+            if (initial.y == final.y + 1 || initial.y == final.y - 1)
+            {
+                return final.x - initial.x == 1 || final.x - initial.x == -1;
+            }
+
+            if (initial.x == final.x + 1 || initial.x == final.x - 1)
+            {
+                return final.y - initial.y == 1 || final.y - initial.y == -1;
             }
 
             return false;
+        }
+
+        bool Queen(Move move)
+        {
+            return SlidingCross(move);
         }
 
         private bool Knight(Move move)
@@ -114,135 +166,110 @@ namespace PureChess
         {
             int difference = move.targetSquare.index - move.initialSquare.index;
 
-            if(move.targetSquare.x == 7) { return difference == 6 || difference == -6 || difference == -15|| difference == 15; }
-            if (move.targetSquare.x == 1) { return difference == 10 || difference == -10 || difference == -17 || difference == 17; }
+            if (move.targetSquare.x == move.initialSquare.x + 1 || move.targetSquare.x == move.initialSquare.x - 1)
+            {
+                return move.targetSquare.y == move.initialSquare.y + 2 || move.targetSquare.y == move.initialSquare.y - 2;
+            }
 
-            return difference == 10 || difference == -10 || difference == 15 || difference == -15 || difference == 17 || difference == -17 || difference == 6 || difference == -6;
+            if (move.targetSquare.y == move.initialSquare.y + 1 || move.targetSquare.y == move.initialSquare.y - 1)
+            {
+                return move.targetSquare.x == move.initialSquare.x + 2 || move.targetSquare.x == move.initialSquare.x - 2;
+            }
+
+            return false;
+
         }
 
         private bool Rook(Move move)
         {
-            return SlidingPiece(move);
+            //return SlidingPiece(move);
+            return SlidingCross(move);
 
         }
 
-        private bool SlidingPiece(Move move)
+        bool SlidingCross(Move move)
         {
-            int difference = move.targetSquare.index - move.initialSquare.index;
-            int xDifference = (int)move.targetSquare.x - (int)move.initialSquare.x;
-            int yDifference = (int)move.targetSquare.y - (int)move.targetSquare.y;
+            int a = move.targetSquare.index;
+            int b = move.initialSquare.index;
+            int d = a - b;
 
-            foreach (Square currentSquare in Game.board.squares)
+            if (move.initialSquare.x == move.targetSquare.x || move.initialSquare.y == move.targetSquare.y)
             {
 
-                bool betweenY = yDifference > 0 ? currentSquare.y > move.initialSquare.y && currentSquare.y < move.targetSquare.y : currentSquare.y < move.initialSquare.y && currentSquare.y > move.targetSquare.y;
-                bool betweenX = xDifference > 0 ? currentSquare.x > move.initialSquare.x && currentSquare.x < move.targetSquare.x : currentSquare.x < move.initialSquare.x && currentSquare.x > move.targetSquare.x;
-
-                bool vertical = move.initialSquare.x == move.targetSquare.x;
-                bool horizontal = move.initialSquare.y == move.targetSquare.y;
-
-                bool diagonal = move.initialSquare.x != move.targetSquare.x && move.initialSquare.y != move.targetSquare.y;
-
-                // Moving the Piece vertically
-                if (vertical && betweenY)
+                foreach (Square square in Game.board.squares)
                 {
-                    if (!currentSquare.piece.GetPieceType("None") && currentSquare.x == move.initialSquare.x)
+                    if (d > 0)
                     {
-                        Console.WriteLine($"Piece blocking at square {currentSquare.GetCoord()}");
-                        return false;
-                    }
-                }
-
-                //Moving the Piece horizontally
-                if (horizontal && betweenX && currentSquare.y == move.initialSquare.y)
-                {
-                    if (!currentSquare.piece.GetPieceType("None"))
-                    {
-                        Console.WriteLine($"Piece blocking at square {currentSquare.GetCoord()}");
-                        return false;
-                    }
-                }
-
-                if ((diagonal && betweenX && betweenY))
-                {
-                    // Moving UP RIGHT
-                    if (xDifference > 0 && yDifference > 0 && difference % 9 == 0)
-                    {
-                        if (!currentSquare.piece.GetPieceType("None"))
+                        if (square.index > move.initialSquare.index && square.index < move.targetSquare.index)
                         {
-                            if (move.targetSquare.index - currentSquare.index % 9 == 0)
-                            {
-                                return false;
-                            }
-
+                            if (!square.piece.GetPieceType("None")) { return false; }
                         }
                     }
-
-                    // Moving DOWN RIGHT
-                    if (xDifference > 0 && yDifference < 0 && difference % 7 == 0)
+                    else if (d < 0)
                     {
-                        if (!currentSquare.piece.GetPieceType("None"))
+                        if (square.index > move.targetSquare.index && square.index < move.initialSquare.index)
                         {
-                            if (move.targetSquare.index - currentSquare.index % 7 == 0)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    // Moving DOWN LEFT
-                    if (xDifference < 0 && yDifference < 0 && difference % 9 == 0)
-                    {
-                        if (!currentSquare.piece.GetPieceType("None"))
-                        {
-                            if (move.targetSquare.index - currentSquare.index % 9 == 0)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-
-                    // Moving UP LEFT
-                    if (xDifference < 0 && yDifference > 0 && difference % 7 == 0)
-                    {
-                        if (!currentSquare.piece.GetPieceType("None"))
-                        {
-                            if (move.targetSquare.index - currentSquare.index % 7 == 0)
-                            {
-                                return false;
-                            }
+                            if (!square.piece.GetPieceType("None")) { return false; }
                         }
                     }
                 }
 
+                return true;
+            }
+            return false;
+        }
+
+        bool isInCheck()
+        {
+            Game.board.LookForKings();
+            Move move = new Move();
+
+            move.targetSquare = Game.board.kingPos[Game.playerTurn == 0 ? 1 : 0];
+
+            foreach (Square square in Game.board.squares)
+            {
+                move.initialSquare = square;
+                Console.WriteLine($"Validating move: {move.initialSquare.GetCoord()} to {move.targetSquare.GetCoord()}. Status: {ValidateMove(move)}");
+                if (ValidateMove(move)) { Console.WriteLine($"Check! {move.initialSquare.GetCoord()} - {move.targetSquare.GetCoord()}"); return true; }
             }
 
-            return true;
+            return false;
         }
+
+        void UndoLastMove()
+        {
+            Move lastMove = Game.moves[Game.moves.Count - 1];
+
+            Game.moves.Remove(lastMove);
+        }
+
 
         public int depth = 50;
         public int depthCalc = 0;
+        Random r1 = new Random();
+        Random r2 = new Random();
         public void MakeRandomMoves()
         {
             if (depthCalc >= depth)
                 return;
 
             Move move = new Move();
-            Random r1 = new Random();
-            Random r2 = new Random();
 
-            move.initialSquare = Game.board.squares[r1.Next(Game.board.squares.Count)];
-            move.targetSquare = Game.board.squares[r2.Next(Game.board.squares.Count)];
+            do
+            {
+                move.initialSquare = Game.board.squares[r1.Next(Game.board.squares.Count)];
+                move.targetSquare = Game.board.squares[r2.Next(Game.board.squares.Count)];
+            } while (!MakeMove(move));
 
-            if (MakeMove(move)) { depthCalc++; Console.WriteLine(Game.gamePGN); }
+            depthCalc++;
 
-            while (!MakeMove(move) && depthCalc < depth)
+            if (depthCalc < depth)
             {
                 MakeRandomMoves();
             }
-
         }
-        
+
+
 
         public void ForceMove(Square initialSquare, Square targetSquare)
         {
@@ -257,6 +284,6 @@ namespace PureChess
             Game.board.DrawCurrentPosition();
         }
 
-        
+
     }
 }

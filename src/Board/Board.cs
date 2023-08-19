@@ -11,8 +11,9 @@ namespace PureChess
         public string defaultPosition = "RNBQKBNR/PPPPPPPP/......../......../......../......../pppppppp/rnbqkbnr - 0"; // Better than FEN? Nah..
         public int columns = 8;
         public int rows = 8;
-
         public List<Square> squares = new List<Square>();
+
+        public Square[] kingPos = {new Square(), new Square()};
         public void GenerateBoard(string position)
         {
             for (int x = 0; x < columns; x++)
@@ -100,6 +101,14 @@ namespace PureChess
             DrawCurrentPosition();
 
             Game.state = GameState.Playing;
+        }
+
+        public void LookForKings()
+        {
+            foreach (Square square in squares) 
+            {
+                if (square.piece.GetPieceType("King")) { kingPos[square.piece.color] = square; }
+            }
         }
 
         public string GetUpdatedPosition()

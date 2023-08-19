@@ -1,8 +1,8 @@
 ﻿namespace PureChess
 {
-   public class Piece
+    public class Piece
     {
-        public string type;
+        public string type = "None";
         public int color;
         public int value;
 
@@ -69,11 +69,25 @@
             UpdatePieceInfo();
         }
 
-        public void UpdatePiece(string pieceType, int pieceColor)
+        public void UpdatePiece(string newType, int newColor, int newValue)
         {
-            type = pieceType;
-            color = pieceColor;
+            type = newType;
+            color = newColor;
+            value = newValue;
             UpdatePieceInfo();
         }
+        public Piece Clone()
+        {
+            Piece clone = new Piece();
+            UpdatePieceInfo();
+
+            clone.type = type;
+            clone.color = color;
+            clone.value = value;
+
+            return clone;
+        }
+
+
     }
 }
