@@ -42,8 +42,6 @@ namespace PureChess
                     return false;
                 }
 
-
-
                 move.AddToMoveList();
 
                 Game.board.DrawCurrentPosition();
@@ -158,7 +156,9 @@ namespace PureChess
 
         bool Queen(Move move)
         {
-            return SlidingCross(move);
+            bool valid = SlidingCross(move) == true || SlidingDiagonal(move) == true;
+
+            return valid;
         }
 
         private bool Knight(Move move)
@@ -182,7 +182,6 @@ namespace PureChess
 
         private bool Rook(Move move)
         {
-            //return SlidingPiece(move);
             return SlidingCross(move);
 
         }
@@ -217,6 +216,47 @@ namespace PureChess
                 return true;
             }
             return false;
+        }
+
+        // Terrible code, sorry (PLS FIX!!!!!!!!!)
+        bool SlidingDiagonal(Move move)
+        {
+            Console.WriteLine("a");
+            return false;
+            // Geting the X and Y pos of the initial and target square
+            int x1 = move.initialSquare.x;
+            int x2 = move.targetSquare.x;
+
+            int y1 = move.initialSquare.y;
+            int y2 = move.targetSquare.y;
+
+            // Checking which direction we are going based in the X and Y
+            bool movingUpRight = ((x2 > x1) && (y2 > y1));
+            bool movingDownRight = ((x2 > x1) && (y2 < y1));
+
+            bool movingDownLeft = ((x2 < x1) && (y2 < y1));
+            bool movingUpLeft = ((x2 < x1) && (y2 > y1));
+
+            foreach (Square square in Game.board.squares)
+            {
+
+                // Checking if we are in a valid diagonal
+                bool mainDiagonal = (move.targetSquare.index - square.index) % 9 == 0;
+                bool secDiagonal = (move.targetSquare.index - square.index) % 7 == 0;
+
+                if(square.index != move.initialSquare.index)
+                {
+                    if (movingUpRight && mainDiagonal)
+                    {
+                        Console.WriteLine(square.index);
+                        if (!square.piece.GetPieceType("None")) { Console.WriteLine($"Peça bloqueando em {square.GetCoord()}");  return false; }
+                    }
+
+                }
+                
+            }
+
+            return true;
         }
 
         bool isInCheck()
