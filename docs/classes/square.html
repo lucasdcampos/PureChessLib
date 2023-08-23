@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Chess Library Documentation - Square Class</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <h1>Pure Chess Library Documentation</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Square Class</h2>
+        <p>The <code>Square</code> class represents an individual square on the chess board. It contains information about the square's position, its associated piece, and methods to retrieve coordinates.</p>
+
+        <h3>Properties</h3>
+        <ul>
+            <li><code>Index</code> - Gets the index of the square.</li>
+            <li><code>X</code> - Gets the X-coordinate of the square.</li>
+            <li><code>Y</code> - Gets the Y-coordinate of the square.</li>
+            <li><code>Piece</code> - Gets or sets the piece associated with the square.</li>
+        </ul>
+
+        <h3>Methods</h3>
+        <ul>
+            <li><code>GetCoord()</code> - Returns the coordinate of the square in algebraic notation.</li>
+            <!-- Add other methods here -->
+        </ul>
+
+        <h3>Examples</h3>
+        <pre><code>// Create a new square instance
+<code>Square square = new Square();
+square.Index = 0;
+square.X = 0;
+square.Y = 0;
+
+// Set a piece on the square
+<code>Piece piece = new Piece();
+piece.Type = "Pawn";
+piece.Color = 0;
+piece.Value = 1;
+square.Piece = piece;</code>
+
+// Get the coordinate of the square
+<code>string coord = square.GetCoord(); // Returns "a1"</code></code></pre>
+
+        <!-- Add more content as needed -->
+
+        <p>For more details, refer to the source code and documentation of the <code>Square</code> class.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Chess Library Documentation</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        h4 code{
+            color: black;
+        }
+        code{
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pure Chess Library Documentation</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Engine Class</h2>
+        <p>The <code>Engine</code> class in the Pure Chess Library provides the core logic for handling chess moves, validations, and game states.</p>
+        
+        <h3>Methods</h3>
+        <h4><code>MakeMove(move: Move): boolean</code></h4>
+        <p>Attempts to make a move on the chess board. Returns <code>true</code> if the move is valid and successful, otherwise <code>false</code>.</p>
+        
+        <p>This method internally calls the <code>ValidateMove</code> method to check if the move is legal before executing it. It also updates the game state and player turn accordingly.</p>
+        
+        <h4><code>ValidateMove(move: Move): boolean</code></h4>
+        <p>Validates if a given move is legal according to the chess rules. Returns <code>true</code> if the move is valid, otherwise <code>false</code>.</p>
+        
+        <p>This method checks the legality of the move based on the type of piece and the specific movement rules. It considers factors such as the color of the piece, the positions of other pieces, and special move conditions like castling and en passant.</p>
+        
+        <h4><code>ForceMove(initialSquare: Square, targetSquare: Square): void</code></h4>
+        <p>Forces a move on the chess board, bypassing move validation. This method is primarily used for testing purposes.</p>
+        
+        <p>Using this method allows you to directly modify the board state for debugging and testing purposes without adhering to the rules of chess. It can be useful for simulating specific positions or scenarios.</p>
+        
+        <h4><code>isInCheck(): boolean</code></h4>
+        <p>Checks if the current player's king is in a check position.</p>
+        
+        <p>This method iterates through all possible moves on the board and checks if any of them could capture the king of the current player. If such a move is found, it indicates that the king is in check, and the method returns <code>true</code>; otherwise, it returns <code>false</code>.</p>
+        
+        <p>This method is crucial for detecting checkmate and stalemate conditions and for ensuring the validity of the game state.</p>
+        
+        <h4><code>UndoLastMove(): void</code></h4>
+        <p>Undoes the last move made in the game.</p>
+        
+        <p>This method is used to revert the game state to the previous position, allowing for move exploration and analysis. It's essential for implementing game analysis, AI, and debugging.</p>
+        <!-- Adicione mais métodos da classe Engine aqui... -->
+        
+        <h3>Properties</h3>
+        <h4><code>depth: number</code></h4>
+        <p>The search depth used in the engine's AI move calculation. Can be adjusted to control the engine's playing strength.</p>
+        
+        <p>Increasing the search depth allows the engine to explore more possible moves ahead, resulting in stronger play but also requiring more computational resources and time. The depth value can impact the engine's ability to find optimal moves in complex positions.</p>
+        
+        <!-- Adicione mais propriedades da classe Engine aqui... -->
+        
+        <!-- Exemplos de uso da classe Engine... -->
+    </div>
+</body>
+</html>

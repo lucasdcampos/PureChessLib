@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Chess Library Documentation</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        h4 code{
+            color: black;
+        }
+        code{
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pure Chess Library Documentation</h1>
+    </header>
+
+<div class="container">
+    <h2>Game Class</h2>
+    <p>The <code>Game</code> class in the Pure Chess Library manages the overall game state, player turns, and game settings.</p>
+    
+    <h3>Properties</h3>
+    <h4><code>playerTurn: number</code></h4>
+    <p>Represents the current player's turn. It can have two values: <code>0</code> for white player's turn and <code>1</code> for black player's turn.</p>
+    
+    <h4><code>state: GameState</code></h4>
+    <p>An enumeration that represents the current state of the game. It can have values like <code>GameState.NotStarted</code>, <code>GameState.Playing</code>, <code>GameState.Checkmate</code>, and <code>GameState.Stalemate</code>.</p>
+    
+    <h4><code>moves: Move[]</code></h4>
+    <p>An array that holds all the moves made during the game. Each move is an instance of the <code>Move</code> struct.</p>
+    
+    <h4><code>gamePGN: string</code></h4>
+    <p>A string that represents the game in PGN (Portable Game Notation) format. PGN is a standard notation used to record chess games. The format includes information about the moves, result, and other game-related data.</p>
+    
+    
+    <h3>Methods</h3>
+    <h4><code>StartNewGame(): void</code></h4>
+    <p>Starts a new chess game by initializing the board, setting initial player turns, and resetting the moves history.</p>
+    
+    <h4><code>StopGame(): void</code></h4>
+    <p>Stops the current game, changing its state to <code>GameState.NotStarted</code>. This method is typically used to end a game prematurely or reset the game state for a new game.</p>
+    
+    <h4><code>RestartGame(): void</code></h4>
+    <p>Restarts the current game by resetting the board and player turns. This is useful for restarting a game after it has concluded.</p>
+    
+
+</div>
+</body>
+</html>

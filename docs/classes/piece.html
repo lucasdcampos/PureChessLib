@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Chess Library Documentation - Piece Class</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <h1>Pure Chess Library Documentation</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Piece Class</h2>
+        <p>The <code>Piece</code> class represents a chess piece with properties such as type, color, and value. It provides methods to update and retrieve piece information.</p>
+
+        <h3>Properties</h3>
+        <ul>
+            <li><code>Type</code> - Gets or sets the type of the piece (e.g., "Pawn", "Rook").</li>
+            <li><code>Color</code> - Gets or sets the color of the piece (0 for white, 1 for black).</li>
+            <li><code>Value</code> - Gets or sets the value of the piece.</li>
+        </ul>
+
+        <h3>Methods</h3>
+        <ul>
+            <li><code>GetPieceName()</code> - Returns the name of the piece including its color.</li>
+            <li><code>GetPieceType(inputType)</code> - Checks if the piece is of a specific type.</li>
+            <li><code>UpdatePieceInfo()</code> - Updates piece information based on its type and color.</li>
+            <!-- Add other methods here -->
+        </ul>
+
+        <h3>Examples</h3>
+        <pre><code>// Create a new piece instance
+<code>Piece piece = new Piece();
+piece.Type = "Rook";
+piece.Color = 0;
+piece.Value = 5;
+
+// Get the piece name
+<code>string pieceName = piece.GetPieceName(); // Returns "White Rook"</code>
+
+// Check if the piece is a Pawn
+<code>bool isPawn = piece.GetPieceType("Pawn"); // Returns false</code></code></pre>
+
+        <!-- Add more content as needed -->
+
+        <p>For more details, refer to the source code and documentation of the <code>Piece</code> class.</p>
+    </div>
+</body>
+</html>

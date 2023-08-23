@@ -4,34 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pure Chess Library Documentation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        h1 {
-            margin-top: 0;
-        }
-
-        p {
-            line-height: 1.5;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -52,14 +25,53 @@
         </ol>
         
         <h3 id="installation">Installation</h3>
-        <p>To use our chess engine, follow the installation instructions available <a href="installation.html">here</a>. This version does not come with a
-        GUI (Graphical User Interface), you can use external tools for that, or use our own: <a>OpenChessTools</a></p>
+        <p>To use our chess engine, follow the installation instructions available <a href="installation.html">here</a>. This version does not come with a GUI (Graphical User Interface), you can use external tools for that, or use our own: <a>OpenChessTools</a></p>
         
+        <h3 id="setup">Setting Up</h3>
+        <p>Before you start using Pure Chess Library, make sure you have a basic understanding of C# and .NET development. Here's how you can set up the library in your project:</p>
+        <ol>
+            <li>Download the latest release of Pure Chess Library from the <a href="https://github.com/your-username/pure-chess-library/releases">GitHub repository</a>.</li>
+            <li>Add the PureChessLib assembly to your project's references.</li>
+            <li>Import the PureChess namespace in your code files: <code>using PureChess;</code></li>
+            <li>You're now ready to start using the library in your chess-related applications.</li>
+        </ol>
+        
+        <h3 id="examples">Examples of Usage</h3>
+        <p>Let's take a look at some simple examples of how to use Pure Chess Library to create a basic chess game:</p>
+        <pre><code><span class="green">// Create a new chess board</span>
+Board <span class="blue">board</span> = new Board();
+board.GenerateBoard(null);
 
-        <h3 id="installation">Installation</h3>
-        <p>To use our chess engine, follow the installation instructions available <a href="installation.html">here</a>. This version does not come with a
-        GUI (Graphical User Interface), you can use external tools for that, or use our own: <a>OpenChessTools</a></p>
-        
+<span class="green">// Load a custom position</span>
+string <span class="blue">customPosition</span> = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+<span class="blue">board</span>.LoadPosition(customPosition);
+
+<span class="green">// Make a move</span>
+Move <span class="blue">move</span> = new Move();
+<span class="blue">move</span>.InitialSquare = <span class="blue">board</span>.Squares[8]; // Example initial square
+<span class="blue">move</span>.TargetSquare = <span class="blue">board</span>.Squares[16]; // Example target square
+bool isValidMove = engine.MakeMove(move);
+
+// Display the updated position
+<span class="blue">board</span>.DrawCurrentPosition();</code></pre>
+
+        <h3 id="api">API and Methods</h3>
+        <p>The Pure Chess Library API provides various methods to interact with the chess engine. Here are some of the most commonly used methods:</p>
+        <ul>
+            <li><code>GenerateBoard(string position)</code>: Generates the chess board based on the provided position.</li>
+            <li><code>LoadPosition(string positionToLoad)</code>: Loads a specified position onto the board.</li>
+            <li><code>MakeMove(Move move)</code>: Makes a move on the board.</li>
+            <li><code>DrawCurrentPosition()</code>: Draws the current position of the chess board.</li>
+            <li>... (more methods)</li>
+        </ul>
+
+        <h3 id="faq">Frequently Asked Questions</h3>
+        <p>Here are some frequently asked questions about Pure Chess Library:</p>
+        <ul>
+            <li>Q: Can I use this library for commercial projects?<br>A: Yes, Pure Chess Library is open-source and available under the MIT License, which allows you to use it in commercial projects.</li>
+            <li>Q: How can I contribute to the development of this library?<br>A: You can contribute by submitting bug reports, feature requests, or pull requests on the GitHub repository.</li>
+            <li>Q: Is there a graphical interface included with this library?<br>A: No, Pure Chess Library provides the basic logic of chess. You can use external tools or build your own GUI.</li>
+        </ul>
     </div>
 </body>
 </html>

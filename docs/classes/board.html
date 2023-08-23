@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Chess Library Documentation - Board Class</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header>
+        <h1>Pure Chess Library Documentation</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Board Class</h2>
+        <p>The <code>Board</code> class is responsible for managing the chess board, including generating the board, loading positions, making moves, and displaying the board's current state.</p>
+
+        <h3>Constructor</h3>
+        <p><code>Board()</code> - Creates a new instance of the <code>Board</code> class.</p>
+
+        <h3>Methods</h3>
+        <ul>
+            <li><code>GenerateBoard(string position)</code> - Generates the chess board and loads the specified position.</li>
+            <li><code>LoadPosition(string positionToLoad)</code> - Loads the specified position on the board.</li>
+            <li><code>LookForKings()</code> - Locates the positions of the kings on the board.</li>
+            <!-- Add other methods here -->
+        </ul>
+
+        <h3>Properties</h3>
+        <ul>
+            <li><code>DefaultPosition</code> - Gets or sets the default position of the chess board.</li>
+            <li><code>Columns</code> - Gets the number of columns on the board.</li>
+            <li><code>Rows</code> - Gets the number of rows on the board.</li>
+            <!-- Add other properties here -->
+        </ul>
+
+        <h3>Examples</h3>
+        <pre><code>// Create a new chess board instance
+<code>Board board = new Board();
+board.GenerateBoard(null);</code>
+
+// Load a custom position
+<code>string customPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+board.LoadPosition(customPosition);</code>
+
+// Display the current board position
+<code>board.DrawCurrentPosition();</code></code></pre>
+
+        <!-- Add more content as needed -->
+
+        <p>For more details, refer to the source code and documentation of the <code>Board</code> class.</p>
+    </div>
+</body>
+</html>
